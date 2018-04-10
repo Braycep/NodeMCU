@@ -8,6 +8,7 @@ import java.net.Socket;
 
 /**
  * Created by Braycep on 2018/4/10.
+ * 这个类用来控制网络数据的传输
  */
 
 public class Utils {
@@ -19,17 +20,16 @@ public class Utils {
     private static String key;
     private static int tid;
 
+    /**
+     * 初始化连接，并进行登陆
+     * @return 返回是否登陆成功
+     */
     public static boolean init() {
         String ip = "121.42.180.30";
         int port = 8282;
 
-		/*//当前设备
-		int id = 5238;
-		String key = "94ea5b1c7";
-		//目标设备
-		int tid = 5141;*/
-
         try {
+            //开启socket通信
             socket = new Socket(ip, port);
             br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             String line;
@@ -40,6 +40,7 @@ public class Utils {
                 }
             }
 
+            //登陆设备
             if (br != null && socket != null) {
                 ps = new PrintStream(socket.getOutputStream());
                 ps.println("{\"M\":\"checkin\",\"ID\":\""+id+"\",\"K\":\""+key+"\"}");
@@ -55,16 +56,23 @@ public class Utils {
                 System.out.println("br or socket is null");
             }
         } catch (IOException e) {
-            //e.printStackTrace();
             System.err.println("连接到服务器失败...: "+e.getMessage());
         }
         return false;
     }
 
+    /**
+     * 使用Runnable的实现类KeepAlive来发送心跳包
+     * @return 返回是否成功开启心跳线程
+     */
     public static boolean keepAlive(){
         return keepAlive(socket, ps, true);
     }
 
+    /**
+     * 查询目标设备是否在线，使用tid
+     * @return 返回查询结果
+     */
     public static boolean isOL() {
         try {
             if (ps != null && br != null) {
@@ -86,6 +94,11 @@ public class Utils {
         return false;
     }
 
+    /**
+     * 进行LED灯的操作，开启或者关闭
+     * @param op 传入操作指令，如：'play','stop'
+     * @return 返回执行结果
+     */
     public static boolean ledOperation(String op) {
         try {
             if (ps != null && br != null) {
@@ -109,9 +122,9 @@ public class Utils {
 
     /**
      * 设备不能正常保持在线状态就会关闭socket连接
-     * @param socket
-     * @param ps
-     * @param alive
+     * @param socket 与服务器通信的socket
+     * @param ps 向服务器写数据
+     * @param alive 是否保持在线
      */
     public static boolean keepAlive(Socket socket, PrintStream ps, boolean alive) {
         try {
@@ -124,6 +137,7 @@ public class Utils {
                     keepAlive.setPs(ps);
                     t.start();
                 }else {
+                    //遍历线程以获得名为alive的线程，然后终止它
                     ThreadGroup threadGroup = Thread.currentThread().getThreadGroup();
                     int threads = threadGroup.activeCount();
                     Thread[] list = new Thread[threads];
@@ -144,6 +158,10 @@ public class Utils {
         return false;
     }
 
+    /**
+     * 断开与服务器的连接
+     * @return 如果收到服务器确认下线数据以及成功停止线程返回true
+     */
     public static boolean disConnect() {
         try {
             if (ps != null && br != null) {
@@ -173,16 +191,8 @@ public class Utils {
         Utils.id = id;
     }
 
-    public static String getKey() {
-        return key;
-    }
-
     public static void setKey(String key) {
         Utils.key = key;
-    }
-
-    public static int getTid() {
-        return tid;
     }
 
     public static void setTid(int tid) {

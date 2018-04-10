@@ -4,6 +4,7 @@ import java.io.PrintStream;
 
 /**
  * Created by Braycep on 2018/4/10.
+ * Runnable的实现类
  */
 
 public class KeepAlive implements Runnable{
@@ -20,6 +21,7 @@ public class KeepAlive implements Runnable{
         this.alive = alive;
     }
 
+    //单例模式
     private KeepAlive() {
 
     }
@@ -28,7 +30,7 @@ public class KeepAlive implements Runnable{
         this.ps = ps;
         this.alive = alive;
     }
-
+    //单例模式
     public static KeepAlive GetInstance() {
         if(keepAlive == null) {
             return new KeepAlive();
