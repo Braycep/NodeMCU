@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top|center"
+    android:background="#199475">
+
+    <TextView
+        android:id="@+id/tv_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/id"
+        android:textColor="#FFF"
+        android:layout_marginTop="10dp"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/et_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="5238"
+        android:text="5238"
+        android:textColor="#FFF"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tv_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/key"
+        android:textColor="#FFF"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/et_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textColor="#FFF"
+        android:hint="94ea5b1c7"
+        android:text="94ea5b1c7"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp" >
+    </EditText>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/login"
+        android:textColor="#199475"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:textColor="#f17c67"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tid"
+        android:textColor="#FFF"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/et_tid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:textColor="#FFF"
+        android:hint="5141"
+        android:text="5141"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/btn_query"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/query"
+        android:textColor="#199475"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/led"
+        android:textColor="#f17c67"
+        android:textSize="18sp" />
+
+</LinearLayout>

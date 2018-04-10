@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">NodeMCU</string>
+    <string name="id">ID</string>
+    <string name="key">API Key</string>
+    <string name="tid">目标ID</string>
+    <string name="login">登陆</string>
+    <string name="logout">注销</string>
+    <string name="query">查询是否在线</string>
+    <string name="led">LED</string>
+</resources>
