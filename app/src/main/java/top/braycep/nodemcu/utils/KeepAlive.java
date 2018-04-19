@@ -13,11 +13,11 @@ public class KeepAlive implements Runnable{
 
     private static KeepAlive keepAlive = null;
 
-    public void setPs(PrintStream ps) {
+    void setPs(PrintStream ps) {
         this.ps = ps;
     }
 
-    public void setAlive(boolean alive) {
+    void setAlive(boolean alive) {
         this.alive = alive;
     }
 
@@ -26,12 +26,8 @@ public class KeepAlive implements Runnable{
 
     }
 
-    private KeepAlive(PrintStream ps, boolean alive) {
-        this.ps = ps;
-        this.alive = alive;
-    }
     //单例模式
-    public static KeepAlive GetInstance() {
+    static KeepAlive GetInstance() {
         if(keepAlive == null) {
             return new KeepAlive();
         }else {
@@ -45,7 +41,6 @@ public class KeepAlive implements Runnable{
             while(alive) {
                 Thread.sleep(45000);
                 ps.println("{\"M\":\"b\"}");
-                System.out.println("Send to Server: {\"M\":\"b\"}");
             }
         } catch (Exception e) {
             System.err.println("Keep Alive Failed...: "+e.getMessage());
