@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">NodeMCU</string>
-    <string name="id">ID</string>
-    <string name="key">API Key</string>
-    <string name="tid">目标ID</string>
+    <string name="id">ID:</string>
+    <string name="key">API Key:</string>
+    <string name="tid">目标ID：</string>
     <string name="login">登陆</string>
     <string name="logout">注销</string>
-    <string name="query">查询是否在线</string>
+    <string name="query">设置目标设备ID</string>
     <string name="led">LED</string>
+    <string name="etxInfo">实时温度/湿度:</string>
+    <string name="t">温度:</string>
+    <string name="h">湿度:</string>
 </resources>

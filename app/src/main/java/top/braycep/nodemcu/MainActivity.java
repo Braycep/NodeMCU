@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -27,14 +28,24 @@ public class MainActivity extends AppCompatActivity {
     EditText et_tid;
 
     TextView tv_query;
+    TextView tv_t;
+    TextView tv_h;
 
     Button btn_login;
     Button btn_logout;
     Button btn_query;
 
     Switch ledSwitch;
+    Switch thSwitch;
 
     MyCT myCT;
+    String t_info;
+    String h_info;
+    String t = "";
+    String h = "";
+    int id;
+
+    Thread th = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,25 +58,31 @@ public class MainActivity extends AppCompatActivity {
         et_tid = findViewById(R.id.et_tid);
 
         tv_query = findViewById(R.id.textView1);
+        tv_t = findViewById(R.id.tv_t);
+        tv_h = findViewById(R.id.tv_h);
+
+        t_info = tv_t.getText().toString();
+        h_info = tv_h.getText().toString();
 
         btn_login = findViewById(R.id.btn_login);
         btn_logout = findViewById(R.id.btn_logout);
         btn_query = findViewById(R.id.btn_query);
 
         ledSwitch = findViewById(R.id.switch1);
+        thSwitch = findViewById(R.id.switch2);
 
         //设置在未登录情况下不能经行其他操作
         btn_logout.setVisibility(View.INVISIBLE);
         et_tid.setVisibility(View.INVISIBLE);
         btn_query.setVisibility(View.INVISIBLE);
         ledSwitch.setVisibility(View.INVISIBLE);
+        thSwitch.setVisibility(View.INVISIBLE);
 
         //登陆事件
         btn_login.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                int id = 0;
                 try {
                     //尝试获取ID，出现异常即ID不正确
                     id = Integer.parseInt(et_id.getText().toString().trim());
@@ -128,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //注销前判断查询的倒计时是否结束，否则结束倒计时
-                        if (myCT != null){
+                        if (myCT != null) {
                             myCT.cancel();
                             myCT = null;
                         }
@@ -144,15 +161,22 @@ public class MainActivity extends AppCompatActivity {
                                     btn_query.setVisibility(View.INVISIBLE);
                                     et_tid.setVisibility(View.INVISIBLE);
                                     ledSwitch.setVisibility(View.INVISIBLE);
+                                    thSwitch.setVisibility(View.INVISIBLE);
                                 }
                             });
                             Looper.prepare();
                             showToast("注销成功");
                             Looper.loop();
                         } else {
-                            Looper.prepare();
-                            showToast("注销失败，请稍后再试");
-                            Looper.loop();
+                            if (Utils.isOL(id)){
+                                Looper.prepare();
+                                showToast("注销失败，请稍后再试");
+                                Looper.loop();
+                            }else {
+                                Looper.prepare();
+                                showToast("注销成功");
+                                Looper.loop();
+                            }
                         }
                     }
                 });
@@ -176,9 +200,11 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 //判断是否在线
                                 if (Utils.isOL()) {
+
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            thSwitch.setVisibility(View.VISIBLE);
                                             ledSwitch.setVisibility(View.VISIBLE);
                                         }
                                     });
@@ -189,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            thSwitch.setVisibility(View.INVISIBLE);
                                             ledSwitch.setVisibility(View.INVISIBLE);
                                         }
                                     });
@@ -223,17 +250,73 @@ public class MainActivity extends AppCompatActivity {
                         String operation = "stop";
                         if (open) {
                             operation = "play";
-                        }else {
+                        } else {
                             operation = "stop";
                         }
                         if (Utils.ledOperation(operation)) {
                             Looper.prepare();
                             showToast("操作完成");
                             Looper.loop();
-                        }else {
+                        } else {
                             Looper.prepare();
                             showToast("操作失败");
                             Looper.loop();
+                        }
+                    }
+                });
+                operate.start();
+            }
+        });
+
+        thSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean open) {
+                Thread operate = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (open) {
+                            th = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        while (true) {
+                                            String str = Utils.getRealTimeT_H();
+                                            System.out.println("thThread Return str:-"+str);
+                                            if (str == null) {
+                                                Looper.prepare();
+                                                showToast("未能获取到温度信息，请检测线路连接！");
+                                                Looper.loop();
+                                            } else {
+                                                t = str.split("--")[0].split(";")[0];
+                                                h = str.split("--")[1];
+                                                Thread.sleep(1000);
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        tv_t.setText(t_info + " " + t);
+                                                        tv_h.setText(h_info + " " + h);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            th.start();
+                        } else {
+                            th.interrupt();
+                            ;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tv_t.setText(t_info + " 0");
+                                    tv_h.setText(h_info + " 0");
+                                }
+                            });
                         }
                     }
                 });
@@ -244,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 调用Toast.makeToast方法
+     *
      * @param text 传入需要显示的字符串
      */
     public void showToast(String text) {
@@ -267,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onTick(long arg0) {
-            tv_query.setText("目标ID --"+arg0/1000+"s");
+            tv_query.setText("目标ID --" + arg0 / 1000 + "s");
         }
 
     }
